@@ -1,10 +1,10 @@
 {
   "name": "recap",
-  "version": "1.0.0",
-  "description": "Session recap and daily review tool. Generates structured conversation summaries by date, with weekly/monthly reports and quick notes.",
+  "version": "2.0.0",
+  "description": "Global session recap and daily review plugin. Generates structured conversation summaries by date with cross-project awareness, weekly/monthly reports, quick notes, and history search.",
   "author": {
     "name": "lance"
   },
   "license": "MIT",
-  "keywords": ["recap", "summary", "review", "daily-log", "notes", "weekly-report"]
+  "keywords": ["recap", "summary", "review", "daily-log", "notes", "weekly-report", "cross-project", "global"]
 }

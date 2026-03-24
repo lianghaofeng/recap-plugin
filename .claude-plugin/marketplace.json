@@ -7,8 +7,8 @@
     {
       "name": "recap",
       "source": "./",
-      "description": "Session recap and daily review tool with auto-summary, weekly/monthly reports, and quick notes.",
-      "version": "1.0.0"
+      "description": "Global session recap plugin with cross-project awareness, auto-summary, weekly/monthly reports, history search, and quick notes.",
+      "version": "2.0.0"
     }
   ]
 }
