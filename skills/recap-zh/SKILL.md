@@ -3,15 +3,6 @@ name: recap-zh
 description: "对话记录与每日复盘工具。按日期将对话摘要存档到 docs/context/，支持完整对话总结、周报/月报和快速笔记。当用户说「recap」「总结一下」「复盘」「今天做了什么」「周报」「月报」或想记笔记时触发。对话结束时如果没有生成摘要会自动提醒。"
 user-invocable: true
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
-hooks:
-  Stop:
-    - hooks:
-        - type: command
-          command: "RECAP_FILE=\"docs/context/$(date +%Y-%m-%d).md\"; if [ -f \"$RECAP_FILE\" ]; then MOD=$(stat -c %Y \"$RECAP_FILE\" 2>/dev/null || stat -f %m \"$RECAP_FILE\" 2>/dev/null || echo 0); NOW=$(date +%s); DIFF=$((NOW - MOD)); if [ \"$DIFF\" -lt 180 ]; then exit 0; fi; fi; echo '[auto-recap] 本次对话还未生成摘要。请自动执行 recap：回顾对话、运行 git status --short、按格式写入 docs/context/。'"
-  UserPromptSubmit:
-    - hooks:
-        - type: command
-          command: "MARKER=\"/tmp/recap_session_$(date +%Y%m%d)\"; if [ -f \"$MARKER\" ]; then exit 0; fi; touch \"$MARKER\"; LATEST=$(ls -1 docs/context/????-??-??.md 2>/dev/null | sort -r | head -1); if [ -z \"$LATEST\" ]; then exit 0; fi; ISSUES=$(grep -A 10 -E '### (Remaining Issues|遗留问题)' \"$LATEST\" 2>/dev/null | grep '^- ' | head -5); if [ -n \"$ISSUES\" ]; then echo \"[recap 会话恢复] 上次对话 ($(basename $LATEST .md)) 遗留问题：\"; echo \"$ISSUES\"; fi"
 metadata:
   version: "1.0.0"
 ---

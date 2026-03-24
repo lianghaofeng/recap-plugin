@@ -3,15 +3,6 @@ name: recap
 description: "Session recap and daily review tool. Generates structured conversation summaries stored in docs/context/ by date. Supports full session recaps, weekly/monthly reports, and quick notes. Use when the user says 'recap', 'summarize this session', 'what did we do today', 'weekly report', 'monthly report', or wants to log a note. Automatically triggers when a session ends without a recap."
 user-invocable: true
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
-hooks:
-  Stop:
-    - hooks:
-        - type: command
-          command: "RECAP_FILE=\"docs/context/$(date +%Y-%m-%d).md\"; if [ -f \"$RECAP_FILE\" ]; then MOD=$(stat -c %Y \"$RECAP_FILE\" 2>/dev/null || stat -f %m \"$RECAP_FILE\" 2>/dev/null || echo 0); NOW=$(date +%s); DIFF=$((NOW - MOD)); if [ \"$DIFF\" -lt 180 ]; then exit 0; fi; fi; echo '[auto-recap] Session ending without recap. Please generate a conversation summary now: review the conversation, run git status --short, then write to docs/context/ using the recap skill format.'"
-  UserPromptSubmit:
-    - hooks:
-        - type: command
-          command: "MARKER=\"/tmp/recap_session_$(date +%Y%m%d)\"; if [ -f \"$MARKER\" ]; then exit 0; fi; touch \"$MARKER\"; LATEST=$(ls -1 docs/context/????-??-??.md 2>/dev/null | sort -r | head -1); if [ -z \"$LATEST\" ]; then exit 0; fi; ISSUES=$(grep -A 10 -E '### (Remaining Issues|遗留问题)' \"$LATEST\" 2>/dev/null | grep '^- ' | head -5); if [ -n \"$ISSUES\" ]; then echo \"[recap] Previous session ($(basename $LATEST .md)) remaining issues:\"; echo \"$ISSUES\"; fi"
 metadata:
   version: "1.0.0"
 ---
