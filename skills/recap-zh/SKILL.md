@@ -1,10 +1,10 @@
 ---
 name: recap-zh
-description: "对话记录与每日复盘。按日期将对话摘要存档到 docs/context/。当用户说「recap」「总结一下」「复盘」「今天做了什么」或想记笔记时触发。示例：'/recap-zh'、'/recap-zh note 修了认证bug'、'/recap-zh status'。周报/月报/搜索自动路由到子 skill。"
+description: "对话记录与每日复盘。按日期将对话摘要存档到 docs/context/。当用户说「recap」「总结一下」「复盘」「今天做了什么」或想记笔记时触发。示例：'/recap-zh'、'/recap-zh note 修了认证bug'、'/recap-zh status'。周报/月报/搜索/进度/方案自动路由到子 skill。"
 user-invocable: true
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
 # Recap — 对话记录与复盘
@@ -22,10 +22,15 @@ metadata:
 | `status` | 查看今日状态（见下方） |
 | `search <关键词>` | 调用 `recap:recap-search-zh` skill |
 | `projects` | 调用 `recap:recap-projects-zh` skill |
+| `progress` | 调用 `recap:recap-progress-zh` skill |
+| `progress update` | 调用 `recap:recap-progress-zh` skill，参数 "update" |
+| `proposal` | 调用 `recap:recap-proposal-zh` skill |
+| `proposal list` | 调用 `recap:recap-proposal-zh` skill，参数 "list" |
+| `proposal <N>` | 调用 `recap:recap-proposal-zh` skill，参数为编号 |
 
 当前参数值: $ARGUMENTS
 
-如果参数匹配子 skill（weekly、monthly、search、projects），调用对应 skill 后结束。
+如果参数匹配子 skill，调用对应 skill 后结束。
 
 ---
 
@@ -38,9 +43,10 @@ metadata:
    - **文件变更** — 从 git status 提取，标注 M/A/D
    - **关键决策** — "为什么选 A 不选 B"，附理由
    - **遗留问题** — 未完成的工作、后续计划
+   - **委派任务**（可选）— 如使用了子 agent，列出：`[agent 类型] 完成内容摘要`
 3. 检查 `docs/context/YYYY-MM-DD.md` 是否存在
 4. 写入摘要（新建或作为 Session N 追加，用 `---` 分隔）
-5. 更新 INDEX.md 和 META
+5. 写入后同步（见下方）
 
 ### 文件格式
 
@@ -56,6 +62,7 @@ metadata:
 3. 存在且有 `## 笔记` → 在其下追加
 4. 存在但无 `## 笔记` → 在末尾添加该节
 5. 格式：`- [HH:MM] 内容`
+6. 写入后同步（见下方）
 
 ---
 
@@ -67,11 +74,11 @@ metadata:
 
 ---
 
-## META 同步（每次写入后）
+## 写入后同步（每次 recap/笔记后执行）
 
-写入 recap/笔记后，同时更新以下两个文件：
+### 1. META 同步
 
-### 项目 META：`docs/context/META.json`
+**项目 META** — `docs/context/META.json`：
 ```json
 {
   "project": "<git 根目录名>",
@@ -79,11 +86,12 @@ metadata:
   "lastSession": "<ISO 时间戳>",
   "recentTopics": ["<最新讨论内容>"],
   "remainingIssues": ["<最新遗留问题>"],
-  "recapFiles": ["YYYY-MM-DD.md", ...]
+  "recapFiles": ["YYYY-MM-DD.md", ...],
+  "proposals": ["001-xxx.md", ...]
 }
 ```
 
-### 全局 META：`~/.claude/recap/projects/<项目名>.json`
+**全局 META** — `~/.claude/recap/projects/<项目名>.json`：
 ```bash
 mkdir -p ~/.claude/recap/projects
 ```
@@ -99,14 +107,36 @@ mkdir -p ~/.claude/recap/projects
 }
 ```
 
+### 2. DECISIONS.md 自动提取
+
+如果 recap 包含**关键决策**节，将每条决策追加到 `docs/context/DECISIONS.md`：
+
+```markdown
+# 决策日志
+
+## YYYY-MM-DD
+- 决策 — 理由
+```
+
+不存在则创建。在已有日期节下追加，或添加新日期节（最新在上）。
+
+### 3. Git 自动提交
+
+除非 `$RECAP_AUTO_COMMIT` 设为 `false`：
+
+```bash
+git add docs/context/
+git commit -m "recap: YYYY-MM-DD session N summary"
+```
+
 ---
 
 ## INDEX.md 维护
 
-每次写入后更新 `docs/context/INDEX.md`。按月分组（最新在上），日期最新在上。📋 周报 📊 月报。不存在则创建。
+每次写入后更新 `docs/context/INDEX.md`。按月分组（最新在上），日期最新在上。📋 周报 📊 月报 📝 方案。不存在则创建。
 
 ## 文件写入
 
-`mkdir -p docs/context/weekly docs/context/monthly`
+`mkdir -p docs/context/weekly docs/context/monthly docs/context/proposals`
 
 使用 **Write** tool。WSL2 环境下如不可见改用 Bash heredoc。
