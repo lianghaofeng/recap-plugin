@@ -27,6 +27,9 @@ Distill conversations into structured summaries, archived by date in `docs/conte
 | `proposal` | Invoke `recap:recap-proposal` skill |
 | `proposal list` | Invoke `recap:recap-proposal` skill with "list" |
 | `proposal <N>` | Invoke `recap:recap-proposal` skill with number |
+| `context` | Invoke `recap:recap-context` skill |
+| `context <N>` | Invoke `recap:recap-context` skill with number of days |
+| `context full` | Invoke `recap:recap-context` skill with "full" |
 
 Current arguments: $ARGUMENTS
 
@@ -43,7 +46,7 @@ If the argument matches a sub-skill, invoke that skill and stop here.
    - **Files Changed** — From git status, marked M/A/D
    - **Key Decisions** — "Why A instead of B" with rationale
    - **Remaining Issues** — Unfinished work, next steps
-   - **Delegated Tasks** (optional) — If sub-agents were used, list: `[agent-type] summary of what it did`
+   - **Delegated Tasks** (optional) — If sub-agents were used, list: `[agent-type] summary of what it did`. Also check `docs/context/.agent-activity.jsonl` for auto-logged agent completions from this session and include them.
 3. Check if `docs/context/YYYY-MM-DD.md` exists
 4. Write summary (new file or append as next Session N with `---` separator)
 5. Post-write sync (see below)
@@ -127,6 +130,8 @@ If `DECISIONS.md` doesn't exist, create it with the header. Append under existin
 Unless `$RECAP_AUTO_COMMIT` is set to `false`:
 
 ```bash
+# Clean up processed agent activity log
+rm -f docs/context/.agent-activity.jsonl
 git add docs/context/
 git commit -m "recap: YYYY-MM-DD session N summary"
 ```

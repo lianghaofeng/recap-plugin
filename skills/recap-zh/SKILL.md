@@ -27,6 +27,9 @@ metadata:
 | `proposal` | 调用 `recap:recap-proposal-zh` skill |
 | `proposal list` | 调用 `recap:recap-proposal-zh` skill，参数 "list" |
 | `proposal <N>` | 调用 `recap:recap-proposal-zh` skill，参数为编号 |
+| `context` | 调用 `recap:recap-context-zh` skill |
+| `context <N>` | 调用 `recap:recap-context-zh` skill，参数为天数 |
+| `context full` | 调用 `recap:recap-context-zh` skill，参数 "full" |
 
 当前参数值: $ARGUMENTS
 
@@ -43,7 +46,7 @@ metadata:
    - **文件变更** — 从 git status 提取，标注 M/A/D
    - **关键决策** — "为什么选 A 不选 B"，附理由
    - **遗留问题** — 未完成的工作、后续计划
-   - **委派任务**（可选）— 如使用了子 agent，列出：`[agent 类型] 完成内容摘要`
+   - **委派任务**（可选）— 如使用了子 agent，列出：`[agent 类型] 完成内容摘要`。同时检查 `docs/context/.agent-activity.jsonl` 中本次会话自动记录的 agent 完成条目，一并纳入。
 3. 检查 `docs/context/YYYY-MM-DD.md` 是否存在
 4. 写入摘要（新建或作为 Session N 追加，用 `---` 分隔）
 5. 写入后同步（见下方）
@@ -125,6 +128,8 @@ mkdir -p ~/.claude/recap/projects
 除非 `$RECAP_AUTO_COMMIT` 设为 `false`：
 
 ```bash
+# 清理已处理的 agent 活动日志
+rm -f docs/context/.agent-activity.jsonl
 git add docs/context/
 git commit -m "recap: YYYY-MM-DD session N summary"
 ```

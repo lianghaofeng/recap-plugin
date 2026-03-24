@@ -1,7 +1,7 @@
 {
   "name": "recap",
-  "version": "2.0.0",
-  "description": "Global session recap and daily review plugin. Generates structured conversation summaries by date with cross-project awareness, weekly/monthly reports, quick notes, and history search.",
+  "version": "2.2.0",
+  "description": "Global session recap and daily review plugin. Generates structured conversation summaries by date with cross-project awareness, context loader, agent activity tracking, weekly/monthly reports, quick notes, and history search.",
   "author": {
     "name": "lance"
   },
