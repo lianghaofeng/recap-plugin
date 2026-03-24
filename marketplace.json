@@ -1,0 +1,14 @@
+{
+  "name": "recap",
+  "owner": {
+    "name": "lance"
+  },
+  "plugins": [
+    {
+      "name": "recap",
+      "source": "./",
+      "description": "Session recap and daily review tool with auto-summary, weekly/monthly reports, and quick notes.",
+      "version": "1.0.0"
+    }
+  ]
+}

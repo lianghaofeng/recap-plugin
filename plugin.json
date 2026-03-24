@@ -1,0 +1,10 @@
+{
+  "name": "recap",
+  "version": "1.0.0",
+  "description": "Session recap and daily review tool. Generates structured conversation summaries by date, with weekly/monthly reports and quick notes.",
+  "author": {
+    "name": "lance"
+  },
+  "license": "MIT",
+  "keywords": ["recap", "summary", "review", "daily-log", "notes", "weekly-report"]
+}
