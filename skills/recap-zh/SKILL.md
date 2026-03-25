@@ -1,234 +1,178 @@
 ---
 name: recap-zh
-description: "对话记录与每日复盘工具。按日期将对话摘要存档到 docs/context/，支持完整对话总结、周报/月报和快速笔记。当用户说「recap」「总结一下」「复盘」「今天做了什么」「周报」「月报」或想记笔记时触发。对话结束时如果没有生成摘要会自动提醒。"
+description: "对话记录与每日复盘。按日期将对话摘要存档到 docs/recap_context/。当用户说「recap」「总结一下」「复盘」「今天做了什么」或想记笔记时触发。示例：'/recap-zh'、'/recap-zh note 修了认证bug'、'/recap-zh status'。周报/月报/搜索/进度/方案自动路由到子 skill。"
 user-invocable: true
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
 metadata:
-  version: "1.0.0"
+  version: "2.1.0"
 ---
 
 # Recap — 对话记录与复盘
 
-将对话提炼为结构化摘要，按日期存档到 `docs/context/`，方便回顾和追踪工作进展。
+将对话提炼为结构化摘要，按日期存档到 `docs/recap_context/`。
 
-## 参数解析
+## 参数路由
 
 | $ARGUMENTS | 操作 |
 |---|---|
-| 空 | 生成当次对话的完整总结 |
-| `weekly` | 汇总本周对话，生成周报 |
-| `monthly` | 汇总本月对话，生成月报 |
-| `note <内容>` | 追加一条手动笔记 |
-| `status` | 查看今天的 recap 状态 |
+| 空 | 完整总结（见下方） |
+| `weekly` | 调用 `recap:recap-weekly-zh` skill |
+| `monthly` | 调用 `recap:recap-monthly-zh` skill |
+| `note <内容>` | 追加快速笔记（见下方） |
+| `status` | 查看今日状态（见下方） |
+| `search <关键词>` | 调用 `recap:recap-search-zh` skill |
+| `projects` | 调用 `recap:recap-projects-zh` skill |
+| `progress` | 调用 `recap:recap-progress-zh` skill |
+| `progress update` | 调用 `recap:recap-progress-zh` skill，参数 "update" |
+| `proposal` | 调用 `recap:recap-proposal-zh` skill |
+| `proposal list` | 调用 `recap:recap-proposal-zh` skill，参数 "list" |
+| `proposal <N>` | 调用 `recap:recap-proposal-zh` skill，参数为编号 |
+| `context` | 调用 `recap:recap-context-zh` skill |
+| `context <N>` | 调用 `recap:recap-context-zh` skill，参数为天数 |
+| `context full` | 调用 `recap:recap-context-zh` skill，参数 "full" |
+| `silent` 或 `silent on` | 开启静默模式（见下方） |
+| `silent off` | 关闭静默模式（见下方） |
+| `silent status` | 查看当前静默模式状态 |
 
 当前参数值: $ARGUMENTS
 
+如果参数匹配子 skill，调用对应 skill 后结束。
+
 ---
 
-## 操作 1：完整总结（无参数）
+## 静默模式切换（`silent [on|off|status]`）
 
-### 执行步骤
+控制自动 recap（Stop hook）是否静默运行。
 
-1. **获取当前时间**：`date '+%Y-%m-%d %H:%M'`
-2. **获取文件变更**：`git status --short`
-3. **回顾对话** — 提炼以下内容：
+1. 根据参数确定操作：
+   - `silent` 或 `silent on` → 开启
+   - `silent off` → 关闭
+   - `silent status` → 仅显示当前值
+
+2. 开启/关闭时：写入 `~/.claude/recap/config.json`：
+   ```bash
+   mkdir -p ~/.claude/recap
+   ```
+   读取已有的 `~/.claude/recap/config.json`（如存在），更新 `"silent"` 字段后写回：
+   ```json
+   {
+     "silent": true
+   }
+   ```
+   如果文件已有其他字段，合并而非覆盖。
+
+3. 确认信息：
+   - 开启："静默模式已开启。自动 recap 将无感运行。"
+   - 关闭："静默模式已关闭。自动 recap 将显示生成过程。"
+   - 状态："静默模式当前为 **开启/关闭** 状态。"
+
+---
+
+## 完整总结（无参数）
+
+1. 执行 `date '+%Y-%m-%d %H:%M'` 和 `git status --short`
+2. 回顾对话 — 提炼以下内容（某项无内容则省略，不写"无"）：
    - **讨论内容** — 涉及的主题和技术点（2-5 条）
    - **完成工作** — 实际完成的编码、配置、调试等
-   - **文件变更** — 从 git status 提取，标注 M(修改)/A(新增)/D(删除)
-   - **关键决策** — "为什么选 A 不选 B"，附简要理由
-   - **遗留问题** — 未完成的工作、已知 bug、后续计划
-   
-   某项没有内容时省略该节，不写"无"。
+   - **文件变更** — 从 git status 提取，标注 M/A/D
+   - **关键决策** — "为什么选 A 不选 B"，附理由
+   - **遗留问题** — 未完成的工作、后续计划
+   - **委派任务**（可选）— 如使用了子 agent，列出：`[agent 类型] 完成内容摘要`。同时检查 `docs/recap_context/.agent-activity.jsonl` 中本次会话自动记录的 agent 完成条目，一并纳入。
+3. 检查 `docs/recap_context/YYYY-MM-DD.md` 是否存在
+4. 写入摘要（新建或作为 Session N 追加，用 `---` 分隔）
+5. 写入后同步（见下方）
 
-4. **检查当天文件**：`ls docs/context/YYYY-MM-DD.md 2>/dev/null`
-5. **写入摘要**
-6. **更新 INDEX.md**
+### 文件格式
 
-### 新建文件格式
+新建：`# YYYY-MM-DD 对话记录` → `## Session 1 (HH:MM)` → 各节。
+追加：读取已有文件确定下一个 Session 编号，用 `---` 分隔追加。
+
+---
+
+## 快速笔记（`note <内容>`）
+
+1. 执行 `date '+%Y-%m-%d %H:%M'`
+2. 文件不存在 → 创建含标题和 `## 笔记` 节
+3. 存在且有 `## 笔记` → 在其下追加
+4. 存在但无 `## 笔记` → 在末尾添加该节
+5. 格式：`- [HH:MM] 内容`
+6. 写入后同步（见下方）
+
+---
+
+## 状态速查（`status`）
+
+1. 检查 `docs/recap_context/YYYY-MM-DD.md` 是否存在
+2. 存在 → 显示 session 数量、最近时间、笔记数
+3. 不存在 → "今天还没有 recap"
+
+---
+
+## 写入后同步（每次 recap/笔记后执行）
+
+### 1. META 同步
+
+**项目 META** — `docs/recap_context/META.json`：
+```json
+{
+  "project": "<git 根目录名>",
+  "totalSessions": "<数量>",
+  "lastSession": "<ISO 时间戳>",
+  "recentTopics": ["<最新讨论内容>"],
+  "remainingIssues": ["<最新遗留问题>"],
+  "recapFiles": ["YYYY-MM-DD.md", ...],
+  "proposals": ["001-xxx.md", ...]
+}
+```
+
+**全局 META** — `~/.claude/recap/projects/<项目名>.json`：
+```bash
+mkdir -p ~/.claude/recap/projects
+```
+```json
+{
+  "project": "<项目名>",
+  "path": "<git 根目录绝对路径>",
+  "lastSession": "<ISO 时间戳>",
+  "lastRecapFile": "docs/recap_context/YYYY-MM-DD.md",
+  "remainingIssues": ["<最新遗留问题>"],
+  "recentTopics": ["<最新讨论内容>"],
+  "sessionCount": "<总数>"
+}
+```
+
+### 2. DECISIONS.md 自动提取
+
+如果 recap 包含**关键决策**节，将每条决策追加到 `docs/recap_context/DECISIONS.md`：
 
 ```markdown
-# YYYY-MM-DD 对话记录
+# 决策日志
 
-## Session 1 (HH:MM)
-
-### 讨论内容
-- 主题 1
-- 主题 2
-
-### 完成工作
-- 工作 1
-- 工作 2
-
-### 文件变更
-- M path/to/file.cpp
-- A path/to/new_file.hpp
-
-### 关键决策
+## YYYY-MM-DD
 - 决策 — 理由
-
-### 遗留问题
-- 问题描述
 ```
 
-### 追加到已有文件
+不存在则创建。在已有日期节下追加，或添加新日期节（最新在上）。
 
-读取已有文件确定下一个 Session 编号，用 `---` 分隔追加：
+### 3. Git 自动提交
 
-```markdown
+除非 `$RECAP_AUTO_COMMIT` 设为 `false`：
 
----
-
-## Session N (HH:MM)
-
-### 讨论内容
-...
+```bash
+# 清理已处理的 agent 活动日志
+rm -f docs/recap_context/.agent-activity.jsonl
+git add docs/recap_context/
+git commit -m "recap: YYYY-MM-DD session N summary"
 ```
-
----
-
-## 操作 2：周报（`weekly`）
-
-### 执行步骤
-
-1. 获取本周一到今天的日期范围
-2. 读取范围内所有 `docs/context/YYYY-MM-DD.md`
-3. 写入 `docs/context/weekly/YYYY-WXX.md`（XX = ISO 周数）
-4. 更新 INDEX.md
-
-### 格式
-
-```markdown
-# YYYY 第 XX 周 周报 (MM-DD ~ MM-DD)
-
-## 本周概要
-- 一句话总结
-
-## 每日摘要
-
-### 周一 (MM-DD)
-- 要点
-
-### 周二 (MM-DD)
-- 要点
-
-（无记录的跳过）
-
-## 本周完成
-- 汇总完成工作
-
-## 遗留与下周计划
-- 未完成事项
-```
-
----
-
-## 操作 3：月报（`monthly`）
-
-### 执行步骤
-
-1. 确定本月 1 号到今天
-2. 读取所有每日记录和周报
-3. 写入 `docs/context/monthly/YYYY-MM.md`
-4. 更新 INDEX.md
-
-### 格式
-
-```markdown
-# YYYY 年 MM 月 月报
-
-## 月度概要
-- 2-3 句话总结
-
-## 按周回顾
-
-### 第 1 周 (MM-01 ~ MM-07)
-- 要点
-
-## 关键里程碑
-- 重要功能、架构变更
-
-## 技术债务与遗留
-- 累积未解决问题
-```
-
----
-
-## 操作 4：手动笔记（`note <内容>`）
-
-### 执行步骤
-
-1. 获取当前时间
-2. 提取笔记内容（去掉 "note " 前缀）
-3. 检查当天文件：
-   - **不存在** → 创建文件，含标题和笔记节
-   - **有 `## 笔记` 节** → 在其下追加
-   - **无 `## 笔记` 节** → 在文件末尾添加
-
-### 格式
-
-```markdown
-## 笔记
-- [HH:MM] 内容
-```
-
----
-
-## 操作 5：状态速查（`status`）
-
-1. 检查 `docs/context/YYYY-MM-DD.md` 是否存在
-2. 存在：显示 session 数量、最近 session 时间、笔记数
-3. 不存在：显示"今天还没有 recap"
 
 ---
 
 ## INDEX.md 维护
 
-每次写入后更新 `docs/context/INDEX.md`。
-
-### 格式
-
-```markdown
-# 对话记录索引
-
-## 2026-03
-- [03-24](2026-03-24.md) - 当天主要内容描述
-- [03-23](2026-03-23.md) - 描述
-- 📋 [第 12 周周报](weekly/2026-W12.md)
-- 📊 [3 月月报](monthly/2026-03.md)
-```
-
-### 规则
-
-- 按月分组，最新月份在上
-- 每天一行，最新日期在上
-- 已有条目更新描述
-- 📋 周报 📊 月报
-- INDEX.md 不存在则创建
-
----
+每次写入后更新 `docs/recap_context/INDEX.md`。按月分组（最新在上），日期最新在上。📋 周报 📊 月报 📝 方案。不存在则创建。
 
 ## 文件写入
 
-需要时先创建目录：`mkdir -p docs/context/weekly docs/context/monthly`
+`mkdir -p docs/recap_context/weekly docs/recap_context/monthly docs/recap_context/proposals`
 
-使用 **Write** tool 写入文件。WSL2 环境下如果 Write tool 创建的文件 Windows 不可见，改用 Bash heredoc：
-
-```bash
-cat > docs/context/YYYY-MM-DD.md << 'RECAP_EOF'
-内容
-RECAP_EOF
-```
-
----
-
-## 目录结构
-
-```
-docs/context/
-├── INDEX.md
-├── 2026-03-24.md
-├── weekly/
-│   └── 2026-W12.md
-└── monthly/
-    └── 2026-03.md
-```
+使用 **Write** tool。WSL2 环境下如不可见改用 Bash heredoc。
