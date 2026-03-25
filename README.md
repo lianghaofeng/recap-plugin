@@ -114,6 +114,19 @@ By default, recap automatically commits `docs/context/` changes after writing. T
 export RECAP_AUTO_COMMIT=false
 ```
 
+### Silent Mode
+
+By default, auto-recap shows the generation process when a session ends. To make it seamless (no visible output):
+
+```bash
+export RECAP_SILENT=true
+```
+
+| Value | Behavior |
+|-------|----------|
+| `false` (default) | Shows recap content, allows review |
+| `true` | Fully silent, no output to user |
+
 ## Architecture
 
 ### Two-Level META System
