@@ -1,6 +1,6 @@
 ---
 name: recap-zh
-description: "对话记录与每日复盘。按日期将对话摘要存档到 docs/context/。当用户说「recap」「总结一下」「复盘」「今天做了什么」或想记笔记时触发。示例：'/recap-zh'、'/recap-zh note 修了认证bug'、'/recap-zh status'。周报/月报/搜索/进度/方案自动路由到子 skill。"
+description: "对话记录与每日复盘。按日期将对话摘要存档到 docs/recap_context/。当用户说「recap」「总结一下」「复盘」「今天做了什么」或想记笔记时触发。示例：'/recap-zh'、'/recap-zh note 修了认证bug'、'/recap-zh status'。周报/月报/搜索/进度/方案自动路由到子 skill。"
 user-invocable: true
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
 metadata:
@@ -9,7 +9,7 @@ metadata:
 
 # Recap — 对话记录与复盘
 
-将对话提炼为结构化摘要，按日期存档到 `docs/context/`。
+将对话提炼为结构化摘要，按日期存档到 `docs/recap_context/`。
 
 ## 参数路由
 
@@ -30,10 +30,41 @@ metadata:
 | `context` | 调用 `recap:recap-context-zh` skill |
 | `context <N>` | 调用 `recap:recap-context-zh` skill，参数为天数 |
 | `context full` | 调用 `recap:recap-context-zh` skill，参数 "full" |
+| `silent` 或 `silent on` | 开启静默模式（见下方） |
+| `silent off` | 关闭静默模式（见下方） |
+| `silent status` | 查看当前静默模式状态 |
 
 当前参数值: $ARGUMENTS
 
 如果参数匹配子 skill，调用对应 skill 后结束。
+
+---
+
+## 静默模式切换（`silent [on|off|status]`）
+
+控制自动 recap（Stop hook）是否静默运行。
+
+1. 根据参数确定操作：
+   - `silent` 或 `silent on` → 开启
+   - `silent off` → 关闭
+   - `silent status` → 仅显示当前值
+
+2. 开启/关闭时：写入 `~/.claude/recap/config.json`：
+   ```bash
+   mkdir -p ~/.claude/recap
+   ```
+   读取已有的 `~/.claude/recap/config.json`（如存在），更新 `"silent"` 字段后写回：
+   ```json
+   {
+     "silent": true
+   }
+   ```
+   如果文件已有其他字段，合并而非覆盖。
+
+3. 确认信息：
+   - 开启："静默模式已开启。自动 recap 将无感运行。"
+   - 关闭："静默模式已关闭。自动 recap 将显示生成过程。"
+   - 状态："静默模式当前为 **开启/关闭** 状态。"
 
 ---
 
@@ -46,8 +77,8 @@ metadata:
    - **文件变更** — 从 git status 提取，标注 M/A/D
    - **关键决策** — "为什么选 A 不选 B"，附理由
    - **遗留问题** — 未完成的工作、后续计划
-   - **委派任务**（可选）— 如使用了子 agent，列出：`[agent 类型] 完成内容摘要`。同时检查 `docs/context/.agent-activity.jsonl` 中本次会话自动记录的 agent 完成条目，一并纳入。
-3. 检查 `docs/context/YYYY-MM-DD.md` 是否存在
+   - **委派任务**（可选）— 如使用了子 agent，列出：`[agent 类型] 完成内容摘要`。同时检查 `docs/recap_context/.agent-activity.jsonl` 中本次会话自动记录的 agent 完成条目，一并纳入。
+3. 检查 `docs/recap_context/YYYY-MM-DD.md` 是否存在
 4. 写入摘要（新建或作为 Session N 追加，用 `---` 分隔）
 5. 写入后同步（见下方）
 
@@ -71,7 +102,7 @@ metadata:
 
 ## 状态速查（`status`）
 
-1. 检查 `docs/context/YYYY-MM-DD.md` 是否存在
+1. 检查 `docs/recap_context/YYYY-MM-DD.md` 是否存在
 2. 存在 → 显示 session 数量、最近时间、笔记数
 3. 不存在 → "今天还没有 recap"
 
@@ -81,7 +112,7 @@ metadata:
 
 ### 1. META 同步
 
-**项目 META** — `docs/context/META.json`：
+**项目 META** — `docs/recap_context/META.json`：
 ```json
 {
   "project": "<git 根目录名>",
@@ -103,7 +134,7 @@ mkdir -p ~/.claude/recap/projects
   "project": "<项目名>",
   "path": "<git 根目录绝对路径>",
   "lastSession": "<ISO 时间戳>",
-  "lastRecapFile": "docs/context/YYYY-MM-DD.md",
+  "lastRecapFile": "docs/recap_context/YYYY-MM-DD.md",
   "remainingIssues": ["<最新遗留问题>"],
   "recentTopics": ["<最新讨论内容>"],
   "sessionCount": "<总数>"
@@ -112,7 +143,7 @@ mkdir -p ~/.claude/recap/projects
 
 ### 2. DECISIONS.md 自动提取
 
-如果 recap 包含**关键决策**节，将每条决策追加到 `docs/context/DECISIONS.md`：
+如果 recap 包含**关键决策**节，将每条决策追加到 `docs/recap_context/DECISIONS.md`：
 
 ```markdown
 # 决策日志
@@ -129,8 +160,8 @@ mkdir -p ~/.claude/recap/projects
 
 ```bash
 # 清理已处理的 agent 活动日志
-rm -f docs/context/.agent-activity.jsonl
-git add docs/context/
+rm -f docs/recap_context/.agent-activity.jsonl
+git add docs/recap_context/
 git commit -m "recap: YYYY-MM-DD session N summary"
 ```
 
@@ -138,10 +169,10 @@ git commit -m "recap: YYYY-MM-DD session N summary"
 
 ## INDEX.md 维护
 
-每次写入后更新 `docs/context/INDEX.md`。按月分组（最新在上），日期最新在上。📋 周报 📊 月报 📝 方案。不存在则创建。
+每次写入后更新 `docs/recap_context/INDEX.md`。按月分组（最新在上），日期最新在上。📋 周报 📊 月报 📝 方案。不存在则创建。
 
 ## 文件写入
 
-`mkdir -p docs/context/weekly docs/context/monthly docs/context/proposals`
+`mkdir -p docs/recap_context/weekly docs/recap_context/monthly docs/recap_context/proposals`
 
 使用 **Write** tool。WSL2 环境下如不可见改用 Bash heredoc。

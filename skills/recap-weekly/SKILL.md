@@ -15,12 +15,12 @@ Aggregate daily session logs into a weekly summary.
 
 1. Run `date '+%Y-%m-%d'` to get today's date
 2. Calculate Monday of the current week
-3. Read all `docs/context/YYYY-MM-DD.md` files from Monday to today
+3. Read all `docs/recap_context/YYYY-MM-DD.md` files from Monday to today
 4. Generate weekly report
-5. Write to `docs/context/weekly/YYYY-WXX.md` (XX = ISO week number)
-6. Update `docs/context/INDEX.md`
+5. Write to `docs/recap_context/weekly/YYYY-WXX.md` (XX = ISO week number)
+6. Update `docs/recap_context/INDEX.md`
 
-`mkdir -p docs/context/weekly`
+`mkdir -p docs/recap_context/weekly`
 
 ## Format
 

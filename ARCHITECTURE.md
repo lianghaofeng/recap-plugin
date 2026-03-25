@@ -16,7 +16,7 @@
 ```
 
 **能力**: 手动生成对话摘要、快速笔记、状态查看。
-**输出**: `docs/context/YYYY-MM-DD.md`（每日对话日志）。
+**输出**: `docs/recap_context/YYYY-MM-DD.md`（每日对话日志）。
 
 ---
 
@@ -135,7 +135,7 @@ recap-plugin/                              # 插件根目录
 ### 运行时数据结构
 
 ```
-项目级 (docs/context/):                     全局级 (~/.claude/recap/):
+项目级 (docs/recap_context/):                     全局级 (~/.claude/recap/):
 ├── META.json              ←── 双向同步 ──→ projects/<project>.json
 ├── PROGRESS.md                              pending.log
 ├── DECISIONS.md
@@ -167,11 +167,11 @@ UserPromptSubmit hook 触发（每天首次）
     │           └── 输出: [recap-recovery] 提醒生成补救 recap
     │
     ├── 3. 自动上下文加载 (v2.2 新增)
-    │   ├── 读取 docs/context/META.json → 输出项目快照
-    │   └── 读取 docs/context/PROGRESS.md → 提取当前焦点 + 后续步骤
+    │   ├── 读取 docs/recap_context/META.json → 输出项目快照
+    │   └── 读取 docs/recap_context/PROGRESS.md → 提取当前焦点 + 后续步骤
     │
     ├── 4. 遗留问题提醒
-    │   └── 读取最新 docs/context/YYYY-MM-DD.md
+    │   └── 读取最新 docs/recap_context/YYYY-MM-DD.md
     │       └── 提取 "### Remaining Issues" / "### 遗留问题" 下的条目
     │
     └── 5. 跨项目状态
@@ -197,7 +197,7 @@ commands/recap.md (薄包装)
         │                       ├── 1. date + git status
         │                       ├── 2. 提炼 Topics/Work Done/Files/Decisions/Issues
         │                       ├── 3. 读取 .agent-activity.jsonl → 填充委派任务
-        │                       ├── 4. 写入 docs/context/YYYY-MM-DD.md
+        │                       ├── 4. 写入 docs/recap_context/YYYY-MM-DD.md
         │                       └── 5. Post-Write Sync
         │                             ├── META 同步 (项目级 + 全局级)
         │                             ├── DECISIONS.md 自动提取
@@ -218,7 +218,7 @@ commands/recap.md (薄包装)
         │                       └── 显示当日 session 数、笔记数
         │
         ├── "search <q>" ────→ recap:recap-search skill
-        │                       └── grep 全部 docs/context/ + META.json
+        │                       └── grep 全部 docs/recap_context/ + META.json
         │
         ├── "projects" ──────→ recap:recap-projects skill
         │                       └── 读 ~/.claude/recap/projects/*.json → 表格
@@ -246,11 +246,11 @@ commands/recap.md (薄包装)
     ▼
 SubagentStop hook 触发
     │
-    ├── 检查 docs/context/ 是否存在
+    ├── 检查 docs/recap_context/ 是否存在
     │   ├── 不存在 → 跳过（项目未使用 recap）
     │   └── 存在 ↓
     │
-    ├── 追加一行到 docs/context/.agent-activity.jsonl:
+    ├── 追加一行到 docs/recap_context/.agent-activity.jsonl:
     │   {"ts":"ISO","agent":"<description>","action":"completed"}
     │
     └── 输出: [recap] Sub-agent '<name>' completed. Activity logged.
@@ -307,10 +307,10 @@ Stop hook 触发
 │       │    ┌───────────────────────┐                            │
 │       │    │     Post-Write Sync   │                            │
 │       │    ├───────────────────────┤                            │
-│       │    │ • META.json 更新      │──→ docs/context/META.json  │
+│       │    │ • META.json 更新      │──→ docs/recap_context/META.json  │
 │       │    │ • 全局 META 更新      │──→ ~/.claude/recap/projects/│
-│       │    │ • DECISIONS.md 追加   │──→ docs/context/DECISIONS.md│
-│       │    │ • INDEX.md 更新       │──→ docs/context/INDEX.md   │
+│       │    │ • DECISIONS.md 追加   │──→ docs/recap_context/DECISIONS.md│
+│       │    │ • INDEX.md 更新       │──→ docs/recap_context/INDEX.md   │
 │       │    │ • 清理 activity log   │                            │
 │       │    │ • git add + commit    │                            │
 │       │    └───────────────────────┘                            │

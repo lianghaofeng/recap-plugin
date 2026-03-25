@@ -20,11 +20,11 @@ The search query is everything after "search " in $ARGUMENTS.
 1. Extract the search query from arguments
 2. Search across all recap files:
    ```bash
-   grep -r -i -n "<query>" docs/context/ --include="*.md" | head -30
+   grep -r -i -n "<query>" docs/recap_context/ --include="*.md" | head -30
    ```
 3. Also search META.json for topic matches:
    ```bash
-   grep -i "<query>" docs/context/META.json 2>/dev/null
+   grep -i "<query>" docs/recap_context/META.json 2>/dev/null
    ```
 4. Present results grouped by date, with surrounding context
 5. Summarize: which sessions discussed the topic, key points found

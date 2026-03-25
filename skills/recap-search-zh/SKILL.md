@@ -20,11 +20,11 @@ metadata:
 1. 提取搜索关键词
 2. 搜索所有 recap 文件：
    ```bash
-   grep -r -i -n "<关键词>" docs/context/ --include="*.md" | head -30
+   grep -r -i -n "<关键词>" docs/recap_context/ --include="*.md" | head -30
    ```
 3. 同时搜索 META.json：
    ```bash
-   grep -i "<关键词>" docs/context/META.json 2>/dev/null
+   grep -i "<关键词>" docs/recap_context/META.json 2>/dev/null
    ```
 4. 按日期分组展示结果，附上下文
 5. 总结：哪些会话讨论了该主题、关键发现

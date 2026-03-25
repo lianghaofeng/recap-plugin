@@ -1,6 +1,6 @@
 ---
 name: recap-proposal-zh
-description: "创建、列出和查看设计方案。从对话中提取方案设计，存为结构化文档到 docs/context/proposals/。当用户说「写个方案」「设计文档」「保存这个计划」或执行 '/recap-zh proposal' 时触发。示例：'/recap-zh proposal'、'/recap-zh proposal list'、'/recap-zh proposal 001'。"
+description: "创建、列出和查看设计方案。从对话中提取方案设计，存为结构化文档到 docs/recap_context/proposals/。当用户说「写个方案」「设计文档」「保存这个计划」或执行 '/recap-zh proposal' 时触发。示例：'/recap-zh proposal'、'/recap-zh proposal list'、'/recap-zh proposal 001'。"
 user-invocable: false
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
 metadata:
@@ -24,15 +24,15 @@ metadata:
 1. 执行 `date '+%Y-%m-%d'`
 2. 确定下一个方案编号：
    ```bash
-   ls docs/context/proposals/*.md 2>/dev/null | wc -l
+   ls docs/recap_context/proposals/*.md 2>/dev/null | wc -l
    ```
    下一编号 = 数量 + 1，零填充到 3 位（001、002……）
 3. 回顾对话中的设计讨论、方案规划、架构决策
-4. 写入 `docs/context/proposals/NNN-<slug>.md`
-5. 更新 `docs/context/META.json` — 将文件名添加到 `"proposals"` 数组
-6. 更新 `docs/context/INDEX.md` — 添加 📝 条目
+4. 写入 `docs/recap_context/proposals/NNN-<slug>.md`
+5. 更新 `docs/recap_context/META.json` — 将文件名添加到 `"proposals"` 数组
+6. 更新 `docs/recap_context/INDEX.md` — 添加 📝 条目
 
-`mkdir -p docs/context/proposals`
+`mkdir -p docs/recap_context/proposals`
 
 ### 方案格式
 
@@ -71,7 +71,7 @@ metadata:
 
 ## 列出方案
 
-1. 读取 `docs/context/proposals/` 下所有文件
+1. 读取 `docs/recap_context/proposals/` 下所有文件
 2. 提取每个方案的标题和状态
 3. 表格展示：
 
@@ -86,7 +86,7 @@ metadata:
 
 ## 查看方案
 
-1. 读取 `docs/context/proposals/NNN-*.md`（按编号前缀匹配）
+1. 读取 `docs/recap_context/proposals/NNN-*.md`（按编号前缀匹配）
 2. 展示内容
 3. 未找到时列出可用方案
 

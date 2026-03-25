@@ -17,10 +17,10 @@ Aggregate all daily and weekly records into a monthly overview.
 2. Determine date range from 1st of the month to today
 3. Read all daily records and weekly reports for the month
 4. Generate monthly report
-5. Write to `docs/context/monthly/YYYY-MM.md`
-6. Update `docs/context/INDEX.md`
+5. Write to `docs/recap_context/monthly/YYYY-MM.md`
+6. Update `docs/recap_context/INDEX.md`
 
-`mkdir -p docs/context/monthly`
+`mkdir -p docs/recap_context/monthly`
 
 ## Format
 

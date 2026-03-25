@@ -108,7 +108,7 @@ Or just type naturally: "recap", "summarize this session", "总结一下", "复�
 
 ### Git Auto-Commit
 
-By default, recap automatically commits `docs/context/` changes after writing. To disable:
+By default, recap automatically commits `docs/recap_context/` changes after writing. To disable:
 
 ```bash
 export RECAP_AUTO_COMMIT=false
@@ -116,11 +116,21 @@ export RECAP_AUTO_COMMIT=false
 
 ### Silent Mode
 
-By default, auto-recap shows the generation process when a session ends. To make it seamless (no visible output):
+By default, auto-recap shows the generation process when a session ends. Toggle via command:
+
+```
+/recap silent          # Enable silent mode
+/recap silent off      # Disable silent mode
+/recap silent status   # Check current setting
+```
+
+Or via environment variable (takes precedence over config):
 
 ```bash
 export RECAP_SILENT=true
 ```
+
+The setting is persisted in `~/.claude/recap/config.json`.
 
 | Value | Behavior |
 |-------|----------|
@@ -141,7 +151,7 @@ export RECAP_SILENT=true
 └── pending.log                # Error recovery: tracks incomplete recaps
 ```
 
-**Project Level** (`docs/context/` in each project):
+**Project Level** (`docs/recap_context/` in each project):
 ```json
 {
   "project": "my-webapp",
@@ -181,7 +191,7 @@ The Stop hook writes a pending marker to `~/.claude/recap/pending.log`. On next 
 ## Output Structure
 
 ```
-docs/context/                          # Per-project
+docs/recap_context/                          # Per-project
 ├── META.json                          # Structured project metadata
 ├── PROGRESS.md                        # Living progress document
 ├── DECISIONS.md                       # Auto-extracted decision log
@@ -250,7 +260,7 @@ Considered single global file vs per-project files.
 
 ## Implementation
 1. Global META at ~/.claude/recap/projects/
-2. Project META at docs/context/META.json
+2. Project META at docs/recap_context/META.json
 3. Read-time aggregation for cross-project queries
 
 ## References

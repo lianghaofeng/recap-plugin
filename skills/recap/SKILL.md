@@ -1,6 +1,6 @@
 ---
 name: recap
-description: "Session recap and daily review. Generates structured conversation summaries in docs/context/ by date. Use when user says 'recap', 'summarize this session', 'what did we do today', or wants to log a note. Example: '/recap', '/recap note fixed auth bug', '/recap status'. Routes to sub-skills for weekly/monthly reports, search, projects, progress, and proposals."
+description: "Session recap and daily review. Generates structured conversation summaries in docs/recap_context/ by date. Use when user says 'recap', 'summarize this session', 'what did we do today', or wants to log a note. Example: '/recap', '/recap note fixed auth bug', '/recap status'. Routes to sub-skills for weekly/monthly reports, search, projects, progress, and proposals."
 user-invocable: true
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
 metadata:
@@ -9,7 +9,7 @@ metadata:
 
 # Recap — Session Summary & Daily Review
 
-Distill conversations into structured summaries, archived by date in `docs/context/`.
+Distill conversations into structured summaries, archived by date in `docs/recap_context/`.
 
 ## Argument Routing
 
@@ -30,10 +30,41 @@ Distill conversations into structured summaries, archived by date in `docs/conte
 | `context` | Invoke `recap:recap-context` skill |
 | `context <N>` | Invoke `recap:recap-context` skill with number of days |
 | `context full` | Invoke `recap:recap-context` skill with "full" |
+| `silent` or `silent on` | Enable silent mode (below) |
+| `silent off` | Disable silent mode (below) |
+| `silent status` | Show current silent mode setting |
 
 Current arguments: $ARGUMENTS
 
 If the argument matches a sub-skill, invoke that skill and stop here.
+
+---
+
+## Silent Mode Toggle (`silent [on|off|status]`)
+
+Controls whether auto-recap (Stop hook) runs silently or shows output.
+
+1. Determine action from arguments:
+   - `silent` or `silent on` → enable
+   - `silent off` → disable
+   - `silent status` → show current value only
+
+2. For enable/disable: write the setting to `~/.claude/recap/config.json`:
+   ```bash
+   mkdir -p ~/.claude/recap
+   ```
+   Read existing `~/.claude/recap/config.json` if it exists, update the `"silent"` field, write back:
+   ```json
+   {
+     "silent": true
+   }
+   ```
+   Merge with existing fields if the file already exists (don't overwrite other settings).
+
+3. Confirm to user:
+   - Enable: "Silent mode enabled. Auto-recap will run without visible output."
+   - Disable: "Silent mode disabled. Auto-recap will show the generation process."
+   - Status: "Silent mode is currently **enabled/disabled**."
 
 ---
 
@@ -46,8 +77,8 @@ If the argument matches a sub-skill, invoke that skill and stop here.
    - **Files Changed** — From git status, marked M/A/D
    - **Key Decisions** — "Why A instead of B" with rationale
    - **Remaining Issues** — Unfinished work, next steps
-   - **Delegated Tasks** (optional) — If sub-agents were used, list: `[agent-type] summary of what it did`. Also check `docs/context/.agent-activity.jsonl` for auto-logged agent completions from this session and include them.
-3. Check if `docs/context/YYYY-MM-DD.md` exists
+   - **Delegated Tasks** (optional) — If sub-agents were used, list: `[agent-type] summary of what it did`. Also check `docs/recap_context/.agent-activity.jsonl` for auto-logged agent completions from this session and include them.
+3. Check if `docs/recap_context/YYYY-MM-DD.md` exists
 4. Write summary (new file or append as next Session N with `---` separator)
 5. Post-write sync (see below)
 
@@ -71,7 +102,7 @@ Append: read existing file for next Session number, append with `---` separator.
 
 ## Status (`status`)
 
-1. Check if `docs/context/YYYY-MM-DD.md` exists
+1. Check if `docs/recap_context/YYYY-MM-DD.md` exists
 2. Yes → show session count, latest session time, note count
 3. No → "No recap for today yet"
 
@@ -83,7 +114,7 @@ Run all of the following after writing recap content:
 
 ### 1. META Sync
 
-**Project META** — `docs/context/META.json`:
+**Project META** — `docs/recap_context/META.json`:
 ```json
 {
   "project": "<from git root basename>",
@@ -105,7 +136,7 @@ mkdir -p ~/.claude/recap/projects
   "project": "<name>",
   "path": "<git root absolute path>",
   "lastSession": "<ISO timestamp>",
-  "lastRecapFile": "docs/context/YYYY-MM-DD.md",
+  "lastRecapFile": "docs/recap_context/YYYY-MM-DD.md",
   "remainingIssues": ["<from latest session>"],
   "recentTopics": ["<from latest session>"],
   "sessionCount": "<total>"
@@ -114,7 +145,7 @@ mkdir -p ~/.claude/recap/projects
 
 ### 2. DECISIONS.md Auto-Extract
 
-If the recap contains a **Key Decisions** section, append each decision to `docs/context/DECISIONS.md`:
+If the recap contains a **Key Decisions** section, append each decision to `docs/recap_context/DECISIONS.md`:
 
 ```markdown
 # Decision Log
@@ -131,8 +162,8 @@ Unless `$RECAP_AUTO_COMMIT` is set to `false`:
 
 ```bash
 # Clean up processed agent activity log
-rm -f docs/context/.agent-activity.jsonl
-git add docs/context/
+rm -f docs/recap_context/.agent-activity.jsonl
+git add docs/recap_context/
 git commit -m "recap: YYYY-MM-DD session N summary"
 ```
 
@@ -140,10 +171,10 @@ git commit -m "recap: YYYY-MM-DD session N summary"
 
 ## INDEX.md Maintenance
 
-Update `docs/context/INDEX.md` after every write. Group by month (newest first), newest date first. Use 📋 weekly, 📊 monthly, 📝 proposals. Create if missing.
+Update `docs/recap_context/INDEX.md` after every write. Group by month (newest first), newest date first. Use 📋 weekly, 📊 monthly, 📝 proposals. Create if missing.
 
 ## File Writing
 
-`mkdir -p docs/context/weekly docs/context/monthly docs/context/proposals`
+`mkdir -p docs/recap_context/weekly docs/recap_context/monthly docs/recap_context/proposals`
 
 Use **Write** tool. On WSL2, fallback to Bash heredoc if needed.

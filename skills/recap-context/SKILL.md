@@ -27,7 +27,7 @@ Current arguments: $ARGUMENTS
 
 ### Step 1: Project META
 
-Read `docs/context/META.json` if it exists. Output as:
+Read `docs/recap_context/META.json` if it exists. Output as:
 
 ```
 📌 Project: <name>
@@ -40,7 +40,7 @@ If META.json doesn't exist, say "No project context found. Run /recap first to i
 
 ### Step 2: Progress Snapshot
 
-Read `docs/context/PROGRESS.md` if it exists. Extract only:
+Read `docs/recap_context/PROGRESS.md` if it exists. Extract only:
 - **Current Focus** section (first 10 lines)
 - **Next Steps** section (first 10 lines)
 
@@ -51,7 +51,7 @@ Skip if file doesn't exist.
 Determine N from arguments (default 3).
 
 ```bash
-ls -1 docs/context/????-??-??.md 2>/dev/null | sort -r | head -N
+ls -1 docs/recap_context/????-??-??.md 2>/dev/null | sort -r | head -N
 ```
 
 For each file (newest first):
@@ -61,11 +61,11 @@ For each file (newest first):
 
 ### Step 4: Decisions (full mode only)
 
-If argument is `full`, read `docs/context/DECISIONS.md` and show the last 10 decisions.
+If argument is `full`, read `docs/recap_context/DECISIONS.md` and show the last 10 decisions.
 
 ### Step 5: Agent Activity
 
-If `docs/context/.agent-activity.jsonl` exists, read and display today's entries:
+If `docs/recap_context/.agent-activity.jsonl` exists, read and display today's entries:
 
 ```
 🤖 Recent agent activity:

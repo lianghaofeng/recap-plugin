@@ -20,7 +20,7 @@ metadata:
 
 ## 显示进度
 
-1. 读取 `docs/context/PROGRESS.md`
+1. 读取 `docs/recap_context/PROGRESS.md`
 2. 存在 → 展示内容
 3. 不存在 → "暂无进度文件。使用 `/recap-zh progress update` 创建。"
 
@@ -28,10 +28,10 @@ metadata:
 
 1. 执行 `date '+%Y-%m-%d %H:%M'`
 2. 执行 `git log --oneline -10` 查看近期活动
-3. 读取已有的 `docs/context/PROGRESS.md`（如存在）
-4. 读取 `docs/context/META.json`（如存在）
+3. 读取已有的 `docs/recap_context/PROGRESS.md`（如存在）
+4. 读取 `docs/recap_context/META.json`（如存在）
 5. 回顾当前对话上下文
-6. 写入/覆盖 `docs/context/PROGRESS.md`（始终全量重写，非追加）
+6. 写入/覆盖 `docs/recap_context/PROGRESS.md`（始终全量重写，非追加）
 
 ## 格式
 

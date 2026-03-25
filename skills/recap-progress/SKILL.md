@@ -20,7 +20,7 @@ Maintain a living progress document for the current project.
 
 ## Display Progress
 
-1. Read `docs/context/PROGRESS.md`
+1. Read `docs/recap_context/PROGRESS.md`
 2. If exists → display contents
 3. If not → "No progress file yet. Use `/recap progress update` to create one."
 
@@ -28,10 +28,10 @@ Maintain a living progress document for the current project.
 
 1. Run `date '+%Y-%m-%d %H:%M'`
 2. Run `git log --oneline -10` for recent activity
-3. Read existing `docs/context/PROGRESS.md` if it exists
-4. Read `docs/context/META.json` if it exists
+3. Read existing `docs/recap_context/PROGRESS.md` if it exists
+4. Read `docs/recap_context/META.json` if it exists
 5. Review the current conversation context
-6. Write/overwrite `docs/context/PROGRESS.md` (this is always a full rewrite, not append)
+6. Write/overwrite `docs/recap_context/PROGRESS.md` (this is always a full rewrite, not append)
 
 ## Format
 

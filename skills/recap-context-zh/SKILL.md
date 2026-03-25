@@ -27,7 +27,7 @@ metadata:
 
 ### 第 1 步：项目 META
 
-读取 `docs/context/META.json`（如存在），输出为：
+读取 `docs/recap_context/META.json`（如存在），输出为：
 
 ```
 📌 项目: <名称>
@@ -40,7 +40,7 @@ metadata:
 
 ### 第 2 步：进度快照
 
-读取 `docs/context/PROGRESS.md`（如存在），只提取：
+读取 `docs/recap_context/PROGRESS.md`（如存在），只提取：
 - **当前焦点** / **Current Focus** 节（前 10 行）
 - **后续步骤** / **Next Steps** 节（前 10 行）
 
@@ -51,7 +51,7 @@ metadata:
 从参数确定 N（默认 3）。
 
 ```bash
-ls -1 docs/context/????-??-??.md 2>/dev/null | sort -r | head -N
+ls -1 docs/recap_context/????-??-??.md 2>/dev/null | sort -r | head -N
 ```
 
 遍历每个文件（最新在前）：
@@ -61,11 +61,11 @@ ls -1 docs/context/????-??-??.md 2>/dev/null | sort -r | head -N
 
 ### 第 4 步：决策记录（仅完整模式）
 
-如果参数为 `full`，读取 `docs/context/DECISIONS.md`，显示最近 10 条决策。
+如果参数为 `full`，读取 `docs/recap_context/DECISIONS.md`，显示最近 10 条决策。
 
 ### 第 5 步：Agent 活动
 
-如果 `docs/context/.agent-activity.jsonl` 存在，读取并显示今天的条目：
+如果 `docs/recap_context/.agent-activity.jsonl` 存在，读取并显示今天的条目：
 
 ```
 🤖 近期 agent 活动:

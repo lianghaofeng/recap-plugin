@@ -17,10 +17,10 @@ metadata:
 2. 确定本月 1 号到今天的范围
 3. 读取所有每日记录和周报
 4. 生成月报
-5. 写入 `docs/context/monthly/YYYY-MM.md`
-6. 更新 `docs/context/INDEX.md`
+5. 写入 `docs/recap_context/monthly/YYYY-MM.md`
+6. 更新 `docs/recap_context/INDEX.md`
 
-`mkdir -p docs/context/monthly`
+`mkdir -p docs/recap_context/monthly`
 
 ## 格式
 

@@ -1,6 +1,6 @@
 ---
 name: recap-proposal
-description: "Create, list, and view design proposals. Extracts solution designs from conversations into structured proposal documents in docs/context/proposals/. Use when user says 'write a proposal', 'design doc', 'save this plan', or invokes '/recap proposal'. Example: '/recap proposal', '/recap proposal list', '/recap proposal 001'."
+description: "Create, list, and view design proposals. Extracts solution designs from conversations into structured proposal documents in docs/recap_context/proposals/. Use when user says 'write a proposal', 'design doc', 'save this plan', or invokes '/recap proposal'. Example: '/recap proposal', '/recap proposal list', '/recap proposal 001'."
 user-invocable: false
 allowed-tools: "Read, Write, Edit, Bash, Glob, Grep"
 metadata:
@@ -24,15 +24,15 @@ Create and manage structured design proposals extracted from conversations.
 1. Run `date '+%Y-%m-%d'`
 2. Determine next proposal number:
    ```bash
-   ls docs/context/proposals/*.md 2>/dev/null | wc -l
+   ls docs/recap_context/proposals/*.md 2>/dev/null | wc -l
    ```
    Next number = count + 1, zero-padded to 3 digits (001, 002, ...)
 3. Review the conversation for design discussions, solution plans, architecture decisions
-4. Write to `docs/context/proposals/NNN-<slug>.md`
-5. Update `docs/context/META.json` — add filename to `"proposals"` array
-6. Update `docs/context/INDEX.md` — add 📝 entry
+4. Write to `docs/recap_context/proposals/NNN-<slug>.md`
+5. Update `docs/recap_context/META.json` — add filename to `"proposals"` array
+6. Update `docs/recap_context/INDEX.md` — add 📝 entry
 
-`mkdir -p docs/context/proposals`
+`mkdir -p docs/recap_context/proposals`
 
 ### Proposal Format
 
@@ -71,7 +71,7 @@ Key steps to implement this proposal.
 
 ## List Proposals
 
-1. Read all files in `docs/context/proposals/`
+1. Read all files in `docs/recap_context/proposals/`
 2. Extract title and status from each
 3. Display as table:
 
@@ -86,7 +86,7 @@ If no proposals exist, say so.
 
 ## View Proposal
 
-1. Read `docs/context/proposals/NNN-*.md` (match by number prefix)
+1. Read `docs/recap_context/proposals/NNN-*.md` (match by number prefix)
 2. Display contents
 3. If not found, list available proposals
 

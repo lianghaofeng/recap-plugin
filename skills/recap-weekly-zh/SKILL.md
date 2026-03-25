@@ -15,12 +15,12 @@ metadata:
 
 1. 执行 `date '+%Y-%m-%d'` 获取今天日期
 2. 计算本周一的日期
-3. 读取周一到今天的所有 `docs/context/YYYY-MM-DD.md`
+3. 读取周一到今天的所有 `docs/recap_context/YYYY-MM-DD.md`
 4. 生成周报
-5. 写入 `docs/context/weekly/YYYY-WXX.md`（XX = ISO 周数）
-6. 更新 `docs/context/INDEX.md`
+5. 写入 `docs/recap_context/weekly/YYYY-WXX.md`（XX = ISO 周数）
+6. 更新 `docs/recap_context/INDEX.md`
 
-`mkdir -p docs/context/weekly`
+`mkdir -p docs/recap_context/weekly`
 
 ## 格式
 
