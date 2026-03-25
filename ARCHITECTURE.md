@@ -16,7 +16,7 @@
 ```
 
 **能力**: 手动生成对话摘要、快速笔记、状态查看。
-**输出**: `docs/recap_context/YYYY-MM-DD.md`（每日对话日志）。
+**输出**: `docs/recap_context/daily/YYYY/YYYY-MM-DD.md`（每日对话日志）。
 
 ---
 
@@ -141,8 +141,8 @@ recap-plugin/                              # 插件根目录
 ├── DECISIONS.md
 ├── INDEX.md
 ├── .agent-activity.jsonl  (临时)
-├── YYYY-MM-DD.md          (日志)
-├── weekly/YYYY-WXX.md     (周报)
+├── daily/YYYY/YYYY-MM-DD.md  (日志)
+├── weekly/YYYY/YYYY-WXX.md   (周报)
 ├── monthly/YYYY-MM.md     (月报)
 └── proposals/NNN-*.md     (方案)
 ```
@@ -171,7 +171,7 @@ UserPromptSubmit hook 触发（每天首次）
     │   └── 读取 docs/recap_context/PROGRESS.md → 提取当前焦点 + 后续步骤
     │
     ├── 4. 遗留问题提醒
-    │   └── 读取最新 docs/recap_context/YYYY-MM-DD.md
+    │   └── 读取最新 docs/recap_context/daily/YYYY/YYYY-MM-DD.md
     │       └── 提取 "### Remaining Issues" / "### 遗留问题" 下的条目
     │
     └── 5. 跨项目状态
@@ -197,7 +197,7 @@ commands/recap.md (薄包装)
         │                       ├── 1. date + git status
         │                       ├── 2. 提炼 Topics/Work Done/Files/Decisions/Issues
         │                       ├── 3. 读取 .agent-activity.jsonl → 填充委派任务
-        │                       ├── 4. 写入 docs/recap_context/YYYY-MM-DD.md
+        │                       ├── 4. 写入 docs/recap_context/daily/YYYY/YYYY-MM-DD.md
         │                       └── 5. Post-Write Sync
         │                             ├── META 同步 (项目级 + 全局级)
         │                             ├── DECISIONS.md 自动提取
@@ -206,7 +206,7 @@ commands/recap.md (薄包装)
         │                             └── INDEX.md 更新
         │
         ├── "weekly" ────────→ recap:recap-weekly skill
-        │                       └── 读 Mon~Today 的日志 → weekly/YYYY-WXX.md
+        │                       └── 读 Mon~Today 的日志 → weekly/YYYY/YYYY-WXX.md
         │
         ├── "monthly" ───────→ recap:recap-monthly skill
         │                       └── 读当月所有日志+周报 → monthly/YYYY-MM.md

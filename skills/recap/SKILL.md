@@ -78,7 +78,7 @@ Controls whether auto-recap (Stop hook) runs silently or shows output.
    - **Key Decisions** — "Why A instead of B" with rationale
    - **Remaining Issues** — Unfinished work, next steps
    - **Delegated Tasks** (optional) — If sub-agents were used, list: `[agent-type] summary of what it did`. Also check `docs/recap_context/.agent-activity.jsonl` for auto-logged agent completions from this session and include them.
-3. Check if `docs/recap_context/YYYY-MM-DD.md` exists
+3. Check if `docs/recap_context/daily/YYYY/YYYY-MM-DD.md` exists
 4. Write summary (new file or append as next Session N with `---` separator)
 5. Post-write sync (see below)
 
@@ -102,7 +102,7 @@ Append: read existing file for next Session number, append with `---` separator.
 
 ## Status (`status`)
 
-1. Check if `docs/recap_context/YYYY-MM-DD.md` exists
+1. Check if `docs/recap_context/daily/YYYY/YYYY-MM-DD.md` exists
 2. Yes → show session count, latest session time, note count
 3. No → "No recap for today yet"
 
@@ -122,7 +122,7 @@ Run all of the following after writing recap content:
   "lastSession": "<ISO timestamp>",
   "recentTopics": ["<latest topics>"],
   "remainingIssues": ["<latest remaining issues>"],
-  "recapFiles": ["YYYY-MM-DD.md", ...],
+  "recapFiles": ["daily/YYYY/YYYY-MM-DD.md", ...],
   "proposals": ["001-xxx.md", ...]
 }
 ```
@@ -136,7 +136,7 @@ mkdir -p ~/.claude/recap/projects
   "project": "<name>",
   "path": "<git root absolute path>",
   "lastSession": "<ISO timestamp>",
-  "lastRecapFile": "docs/recap_context/YYYY-MM-DD.md",
+  "lastRecapFile": "docs/recap_context/daily/YYYY/YYYY-MM-DD.md",
   "remainingIssues": ["<from latest session>"],
   "recentTopics": ["<from latest session>"],
   "sessionCount": "<total>"
@@ -175,6 +175,6 @@ Update `docs/recap_context/INDEX.md` after every write. Group by month (newest f
 
 ## File Writing
 
-`mkdir -p docs/recap_context/weekly docs/recap_context/monthly docs/recap_context/proposals`
+`mkdir -p docs/recap_context/daily/$(date +%Y) docs/recap_context/weekly/$(date +%Y) docs/recap_context/monthly docs/recap_context/proposals`
 
 Use **Write** tool. On WSL2, fallback to Bash heredoc if needed.

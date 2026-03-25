@@ -51,7 +51,7 @@ Skip if file doesn't exist.
 Determine N from arguments (default 3).
 
 ```bash
-ls -1 docs/recap_context/????-??-??.md 2>/dev/null | sort -r | head -N
+ls -1 docs/recap_context/daily/*/*.md 2>/dev/null | sort -r | head -N
 ```
 
 For each file (newest first):

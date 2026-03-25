@@ -15,7 +15,7 @@ Aggregate all daily and weekly records into a monthly overview.
 
 1. Run `date '+%Y-%m-%d'` to get current date
 2. Determine date range from 1st of the month to today
-3. Read all daily records and weekly reports for the month
+3. Read all daily records from `docs/recap_context/daily/YYYY/` and weekly reports from `docs/recap_context/weekly/YYYY/` for the month
 4. Generate monthly report
 5. Write to `docs/recap_context/monthly/YYYY-MM.md`
 6. Update `docs/recap_context/INDEX.md`

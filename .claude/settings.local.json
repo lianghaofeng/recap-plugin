@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import json; json.load\\(open\\(''hooks/hooks.json''\\)\\)\")",
+      "Read(//home/lance/.claude/plugins/**)",
+      "Read(//home/lance/.claude/**)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\(''''plugins'''',d.get\\(''''enabledPlugins'''',''''not found''''\\)\\), indent=2\\)\\)\")",
+      "Bash(python3 -c \":*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(python3:*)",
+      "Bash(ls:*)",
+      "Bash(rsync:*)"
+    ]
+  }
+}

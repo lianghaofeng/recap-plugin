@@ -78,7 +78,7 @@ metadata:
    - **关键决策** — "为什么选 A 不选 B"，附理由
    - **遗留问题** — 未完成的工作、后续计划
    - **委派任务**（可选）— 如使用了子 agent，列出：`[agent 类型] 完成内容摘要`。同时检查 `docs/recap_context/.agent-activity.jsonl` 中本次会话自动记录的 agent 完成条目，一并纳入。
-3. 检查 `docs/recap_context/YYYY-MM-DD.md` 是否存在
+3. 检查 `docs/recap_context/daily/YYYY/YYYY-MM-DD.md` 是否存在
 4. 写入摘要（新建或作为 Session N 追加，用 `---` 分隔）
 5. 写入后同步（见下方）
 
@@ -102,7 +102,7 @@ metadata:
 
 ## 状态速查（`status`）
 
-1. 检查 `docs/recap_context/YYYY-MM-DD.md` 是否存在
+1. 检查 `docs/recap_context/daily/YYYY/YYYY-MM-DD.md` 是否存在
 2. 存在 → 显示 session 数量、最近时间、笔记数
 3. 不存在 → "今天还没有 recap"
 
@@ -120,7 +120,7 @@ metadata:
   "lastSession": "<ISO 时间戳>",
   "recentTopics": ["<最新讨论内容>"],
   "remainingIssues": ["<最新遗留问题>"],
-  "recapFiles": ["YYYY-MM-DD.md", ...],
+  "recapFiles": ["daily/YYYY/YYYY-MM-DD.md", ...],
   "proposals": ["001-xxx.md", ...]
 }
 ```
@@ -134,7 +134,7 @@ mkdir -p ~/.claude/recap/projects
   "project": "<项目名>",
   "path": "<git 根目录绝对路径>",
   "lastSession": "<ISO 时间戳>",
-  "lastRecapFile": "docs/recap_context/YYYY-MM-DD.md",
+  "lastRecapFile": "docs/recap_context/daily/YYYY/YYYY-MM-DD.md",
   "remainingIssues": ["<最新遗留问题>"],
   "recentTopics": ["<最新讨论内容>"],
   "sessionCount": "<总数>"
@@ -173,6 +173,6 @@ git commit -m "recap: YYYY-MM-DD session N summary"
 
 ## 文件写入
 
-`mkdir -p docs/recap_context/weekly docs/recap_context/monthly docs/recap_context/proposals`
+`mkdir -p docs/recap_context/daily/$(date +%Y) docs/recap_context/weekly/$(date +%Y) docs/recap_context/monthly docs/recap_context/proposals`
 
 使用 **Write** tool。WSL2 环境下如不可见改用 Bash heredoc。

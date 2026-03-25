@@ -159,7 +159,7 @@ The setting is persisted in `~/.claude/recap/config.json`.
   "lastSession": "2026-03-24T17:30:00",
   "recentTopics": ["checkout flow"],
   "remainingIssues": ["fix auth timeout"],
-  "recapFiles": ["2026-03-24.md", "2026-03-23.md"],
+  "recapFiles": ["daily/2026/2026-03-24.md", "daily/2026/2026-03-23.md"],
   "proposals": ["001-cross-project-meta.md"]
 }
 ```
@@ -196,10 +196,13 @@ docs/recap_context/                          # Per-project
 ├── PROGRESS.md                        # Living progress document
 ├── DECISIONS.md                       # Auto-extracted decision log
 ├── INDEX.md                           # Monthly-grouped index
-├── 2026-03-24.md                      # Daily session logs
-├── 2026-03-23.md
-├── weekly/
-│   └── 2026-W12.md                    # Weekly reports
+├── daily/                             # Daily session logs (by year)
+│   └── 2026/
+│       ├── 2026-03-23.md
+│       └── 2026-03-24.md
+├── weekly/                            # Weekly reports (by year)
+│   └── 2026/
+│       └── 2026-W12.md
 ├── monthly/
 │   └── 2026-03.md                     # Monthly reports
 └── proposals/
@@ -264,7 +267,7 @@ Considered single global file vs per-project files.
 3. Read-time aggregation for cross-project queries
 
 ## References
-- Related recap: [2026-03-24](../2026-03-24.md)
+- Related recap: [2026-03-24](../daily/2026/2026-03-24.md)
 ```
 
 ## Hooks

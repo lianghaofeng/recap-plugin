@@ -27,7 +27,7 @@ Each file in `~/.claude/recap/projects/` represents one project:
   "project": "project-name",
   "path": "/absolute/path",
   "lastSession": "ISO timestamp",
-  "lastRecapFile": "docs/recap_context/YYYY-MM-DD.md",
+  "lastRecapFile": "docs/recap_context/daily/YYYY/YYYY-MM-DD.md",
   "remainingIssues": ["issue1", "issue2"],
   "recentTopics": ["topic1", "topic2"],
   "sessionCount": 10

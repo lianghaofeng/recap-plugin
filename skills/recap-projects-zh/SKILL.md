@@ -27,7 +27,7 @@ metadata:
   "project": "项目名",
   "path": "/绝对路径",
   "lastSession": "ISO 时间戳",
-  "lastRecapFile": "docs/recap_context/YYYY-MM-DD.md",
+  "lastRecapFile": "docs/recap_context/daily/YYYY/YYYY-MM-DD.md",
   "remainingIssues": ["问题1", "问题2"],
   "recentTopics": ["话题1", "话题2"],
   "sessionCount": 10

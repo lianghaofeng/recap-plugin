@@ -15,7 +15,7 @@ metadata:
 
 1. 执行 `date '+%Y-%m-%d'` 获取当前日期
 2. 确定本月 1 号到今天的范围
-3. 读取所有每日记录和周报
+3. 读取 `docs/recap_context/daily/YYYY/` 下的每日记录和 `docs/recap_context/weekly/YYYY/` 下的周报
 4. 生成月报
 5. 写入 `docs/recap_context/monthly/YYYY-MM.md`
 6. 更新 `docs/recap_context/INDEX.md`
